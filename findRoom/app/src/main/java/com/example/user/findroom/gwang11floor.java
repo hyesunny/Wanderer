@@ -19,19 +19,19 @@ import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 
 public class gwang11floor extends AppCompatActivity {
-    public TextView ttext;
-    public TextView ctext;
-    public ImageView gwang10;
+    //public ImageView gwangLectureRooom;
     public Handler handler;
-	public String cin="";
+    public TextView ctext;
+
+	public String cnt[] = {"cnt-1119","cnt-1120"};
+	public String cin[]={"change","this"};
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gwang11floor);
-        ttext=(TextView)findViewById(R.id.ttext);
+        //gwangLectureRooom=(ImageView)findViewById(R.id.gwangLectureRoom);
         ctext=(TextView)findViewById(R.id.ctext);
-        gwang10=(ImageView)findViewById(R.id.gwang10);
     }
     public gwang11floor(){
         handler=new Handler();
@@ -39,38 +39,39 @@ public class gwang11floor extends AppCompatActivity {
     public void tclick(View v) {
         switch (v.getId()) {
             case R.id.test: {
-                RetrieveRequest req = new RetrieveRequest();
-                ttext.setText("..");
-                req.setReceiver(new IReceived() {
-                    public void getResponseBody(final String msg) {
-                        handler.post(new Runnable() {
-                            public void run() {
-                                if(Integer.parseInt(cin)==1)
-                                {
-                                    gwang10.setVisibility(View.VISIBLE);
-                                }
-                                else if(Integer.parseInt(cin)==0){
-                                    gwang10.setVisibility(View.INVISIBLE);
-                                }
-
-                            }
-                        });
-                    }
-                });
-                req.start();
+                int i;
+                for(i=0;i<2;i++) {
+                    RetrieveRequest req = new RetrieveRequest();
+                    req.Numbering(i);
+                    req.RetrieveRequest(cnt[i]);
+                    req.start();
+                }
                 break;
             }
         }
     }
+    public void cclick(View v) {
+        switch (v.getId()) {
+            case R.id.cc: {
+                    ctext.setText(cin[0]);
+                    break;
+            }
+
+        }
+    }
+
+
     public interface IReceived {
         void getResponseBody(String msg);
     }
     class RetrieveRequest extends Thread {
         private final Logger LOG = Logger.getLogger(RetrieveRequest.class.getName());
         private IReceived receiver;
-        private String ContainerName = "cnt-1119";
+        private String ContainerName = "";
+        private int Number;
 
-        public RetrieveRequest(String containerName) {
+        public void Numbering(int number){this.Number=number;}
+        public void RetrieveRequest(String containerName) {
             this.ContainerName = containerName;
         }
         public RetrieveRequest() {}
@@ -79,7 +80,8 @@ public class gwang11floor extends AppCompatActivity {
         @Override
         public void run() {
             try {
-                String sb = "http://58.233.226.102:7579/mobius-yt/adn-ae-Gwang/cnt-1119/latest";
+                String sb = "http://58.233.226.102:7579/mobius-yt/adn-ae-Gwang/"
+                        +ContainerName+"/latest";
 
                 URL mUrl = new URL(sb);
 
@@ -103,7 +105,7 @@ public class gwang11floor extends AppCompatActivity {
                 }
 				
 				ParseElementXml cxml= new ParseElementXml();
-				cin= cxml.GetElementXml(strResp,"con");
+				cin[Number]= cxml.GetElementXml(strResp,"con");
 
                 if ( strResp != "" ) {
                     receiver.getResponseBody(strResp);

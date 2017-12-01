@@ -14,22 +14,22 @@
         android:layout_height="wrap_content"
         android:text="test"
         android:onClick="tclick"/>
-
-    <TextView
-        android:id="@+id/ttext"
+    <Button
+        android:id="@+id/cc"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"
+        android:text="cin?"
+        android:onClick="cclick"/>
     <TextView
         android:id="@+id/ctext"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="hh"/>
+
 
     <ImageView
-        android:id="@+id/gwang10"
+        android:id="@+id/gwangLectureRoom"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/gwang01"
-        android:visibility="invisible"/>
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

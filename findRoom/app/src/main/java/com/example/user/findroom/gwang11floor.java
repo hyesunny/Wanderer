@@ -13,32 +13,35 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class gwang11floor extends AppCompatActivity {
-    //public ImageView gwangLectureRooom;
+
+    public ImageView gwangLectureRooom;
     public Handler handler;
-    public TextView ctext;
+    //public TextView ctext;
 
 	public String cnt[] = {"cnt-1119","cnt-1120"};
-	public String cin[]={"change","this"};
+	public String cin[]={"8","8"};
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gwang11floor);
-        //gwangLectureRooom=(ImageView)findViewById(R.id.gwangLectureRoom);
-        ctext=(TextView)findViewById(R.id.ctext);
+        gwangLectureRooom=(ImageView)findViewById(R.id.gwangLectureRoom);
+        //ctext=(TextView)findViewById(R.id.ctext);
+        startRetrieve();
     }
     public gwang11floor(){
         handler=new Handler();
     }
-    public void tclick(View v) {
-        switch (v.getId()) {
-            case R.id.test: {
+
+    public void startRetrieve() {
                 int i;
                 for(i=0;i<2;i++) {
                     RetrieveRequest req = new RetrieveRequest();
@@ -46,18 +49,24 @@ public class gwang11floor extends AppCompatActivity {
                     req.RetrieveRequest(cnt[i]);
                     req.start();
                 }
-                break;
-            }
-        }
-    }
-    public void cclick(View v) {
-        switch (v.getId()) {
-            case R.id.cc: {
-                    ctext.setText(cin[0]);
-                    break;
-            }
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                showLectureRoom();
+                    }
+                },1000);
 
-        }
+    }
+    public void showLectureRoom() {
+
+                if (Integer.parseInt(cin[0]) == 0 && Integer.parseInt(cin[1]) == 0)
+                    gwangLectureRooom.setImageResource(R.drawable.gwang00);
+                else if (Integer.parseInt(cin[0]) == 1 && Integer.parseInt(cin[1]) == 0)
+                    gwangLectureRooom.setImageResource(R.drawable.gwang10);
+                else if (Integer.parseInt(cin[0]) == 0 && Integer.parseInt(cin[1]) == 1)
+                    gwangLectureRooom.setImageResource(R.drawable.gwang01);
+                else
+                    gwangLectureRooom.setImageResource(R.drawable.gwang11);
     }
 
 

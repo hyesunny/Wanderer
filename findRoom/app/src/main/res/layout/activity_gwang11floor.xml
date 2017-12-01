@@ -8,24 +8,6 @@
     android:orientation="vertical"
     tools:context="com.example.user.findroom.gwang11floor">
 
-    <Button
-        android:id="@+id/test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test"
-        android:onClick="tclick"/>
-    <Button
-        android:id="@+id/cc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="cin?"
-        android:onClick="cclick"/>
-    <TextView
-        android:id="@+id/ctext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="hh"/>
-
 
     <ImageView
         android:id="@+id/gwangLectureRoom"

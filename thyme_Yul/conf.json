@@ -1,0 +1,37 @@
+{
+    "useprotocol": "http",
+    "usesecure": "disable",
+    "cse": {
+        "host": "58.233.226.102",
+        "port": "7579",
+        "name": "mobius-yt",
+        "id": "/mobius-yt",
+        "mqttport": "1883"
+    },
+    "ae": {
+        "id": "adn-ae-Yul",
+        "parent": "/mobius-yt",
+        "name": "adn-ae-Yul",
+        "appid": "4.2.801.916.0.130.2",
+        "port": "9728",
+        "bodytype": "xml",
+        "tasport": "3106"
+    },
+    "cnt": [
+        {
+            "parent": "/mobius-yt/adn-ae-Yul",
+            "name": "cnt-101"
+        },
+        {
+            "parent": "/mobius-yt/adn-ae-Yul",
+            "name": "cnt-401"
+        }
+    ],
+    "sub": [
+        {
+            "parent": "/mobius-yt/adn-ae-Yul/cnt-401",
+            "name": "sub-ctrl",
+            "nu": "http://58.233.226.102:9728/noti"
+        }
+    ]
+}

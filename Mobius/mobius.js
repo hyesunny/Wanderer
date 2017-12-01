@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017, KETI
+ * Copyright (c) 2015, OCEAN
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -9,9 +9,7 @@
  */
 
 /**
- * @file
- * @copyright KETI Korea 2017, OCEAN
- * @author Il Yeup Ahn [iyahn@keti.re.kr]
+ * Created by Il Yeup, Ahn in KETI on 2016-07-28.
  */
 
 var fs = require('fs');
@@ -25,29 +23,23 @@ global.defaultbodytype      = 'json';
 
 // my CSE information
 global.usecsetype           = 'in'; // select 'in' or 'mn' or asn'
-global.usecsebase           = 'Mobius';
-global.usecseid             = '/Mobius';
+global.usecsebase           = 'mobius-yt';
+global.usecseid             = '/mobius-yt';
 global.usecsebaseport       = conf.csebaseport;
 
 global.usedbhost            = 'localhost';
 global.usedbpass            = conf.dbpass;
 
 
-global.usepxywsport         = '7577';
-global.usepxymqttport       = '7578';
-
+global.usepxymqttport       = '7580';
+global.usepxycoapport       = '7581';
 
 global.usetsagentport       = '7582';
 
 global.usemqttbroker        = 'localhost'; // mqttbroker for mobius
+global.usemqttport          = '1883';
 
 global.usesecure            = 'disable';
-if(usesecure === 'enable') {
-    global.usemqttport      = '8883';
-}
-else {
-    usemqttport             = '1883';
-}
 
 global.wdt = require('./wdt');
 

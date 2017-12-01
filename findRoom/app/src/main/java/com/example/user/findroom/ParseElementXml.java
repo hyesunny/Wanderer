@@ -26,9 +26,7 @@ public class ParseElementXml {
             Document doc = docBuilder.parse(is);
             NodeList resultNodes = doc.getElementsByTagName(tagName);
 
-
             getstr = resultNodes.item(0).getFirstChild().getNodeValue();
-
 
             is.close();
 

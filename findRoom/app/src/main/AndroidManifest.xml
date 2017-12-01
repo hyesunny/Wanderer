@@ -23,7 +23,7 @@
         <activity android:name=".gwangfloor" />
         <activity android:name=".gwang11floor" />
         <activity android:name=".yulchungfloor" />
-        <activity android:name=".yul11floor" />
+        <activity android:name=".yul4floor" />
     </application>
 
 </manifest>

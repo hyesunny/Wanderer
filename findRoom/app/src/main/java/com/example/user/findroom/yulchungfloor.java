@@ -17,8 +17,12 @@ public class yulchungfloor extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.yfloor1:
                 break;
-            case R.id.yfloor11:
-                yemptyroom = new Intent(this, yul11floor.class);
+            case R.id.yfloor2:
+                break;
+            case R.id.yfloor3:
+                break;
+            case R.id.yfloor4:
+                yemptyroom = new Intent(this, yul4floor.class);
                 startActivity(yemptyroom);
                 break;
         }

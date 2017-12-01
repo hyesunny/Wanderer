@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.user.findroom.building">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_gravity="center_horizontal"
+        android:text="Buildings"
+        android:textSize="20sp"/>
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:stretchColumns="*"
+        android:shrinkColumns="*"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <TableRow
+            android:layout_weight="1">
+            <ImageView
+                android:id="@+id/gwang"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/realgwang"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:onClick="DialClick"/>
+            <ImageView
+                android:id="@+id/yulchung"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/realyulchung"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:onClick="DialClick"/>
+        </TableRow>
+        <TableRow
+            android:layout_weight="1">
+            <ImageView
+                android:id="@+id/none1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:src="@drawable/realyulchung"
+                android:visibility="invisible" />
+            <ImageView
+                android:id="@+id/none2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerInside"
+                android:src="@drawable/realgwang"
+                android:visibility="invisible"/>
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

@@ -24,9 +24,9 @@ public class gwang11floor extends AppCompatActivity {
 
     public ImageView gwangLectureRooom;
     public Handler handler;
-    //public TextView ctext;
-
+    public TextView pTimeText,pTime1120,pTime1119;
 	public String cnt[] = {"cnt-1119","cnt-1120"};
+	public String pTime[]={"1234","5678"};
 	public String cin[]={"8","8"};
 	
     @Override
@@ -34,7 +34,9 @@ public class gwang11floor extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gwang11floor);
         gwangLectureRooom=(ImageView)findViewById(R.id.gwangLectureRoom);
-        //ctext=(TextView)findViewById(R.id.ctext);
+        pTimeText=(TextView)findViewById(R.id.pTimeText);
+        pTime1119=(TextView)findViewById(R.id.pTIme1119);
+        pTime1120=(TextView)findViewById(R.id.pTime1120);
         startRetrieve();
     }
     public gwang11floor(){
@@ -58,7 +60,14 @@ public class gwang11floor extends AppCompatActivity {
 
     }
     public void showLectureRoom() {
-
+            if(Integer.parseInt(cin[0])==8 || Integer.parseInt(cin[1])==8)
+                gwangLectureRooom.setImageResource(R.drawable.servererror);
+            else{
+                pTimeText.setText("**** Updated Today ****");
+                pTime1119.setText("Gwang1119 : " +pTime[0].substring(9,11)
+                        +":"+pTime[0].substring(11,13)+":"+pTime[0].substring(13,15));
+                pTime1120.setText("Gwang1120 : "+pTime[1].substring(9,11)
+                        +":"+pTime[1].substring(11,13)+":"+pTime[1].substring(13,15));
                 if (Integer.parseInt(cin[0]) == 0 && Integer.parseInt(cin[1]) == 0)
                     gwangLectureRooom.setImageResource(R.drawable.gwang00);
                 else if (Integer.parseInt(cin[0]) == 1 && Integer.parseInt(cin[1]) == 0)
@@ -67,6 +76,7 @@ public class gwang11floor extends AppCompatActivity {
                     gwangLectureRooom.setImageResource(R.drawable.gwang01);
                 else
                     gwangLectureRooom.setImageResource(R.drawable.gwang11);
+        }
     }
 
 
@@ -115,7 +125,7 @@ public class gwang11floor extends AppCompatActivity {
 				
 				ParseElementXml cxml= new ParseElementXml();
 				cin[Number]= cxml.GetElementXml(strResp,"con");
-
+                pTime[Number]=cxml.GetElementXml(strResp,"ct");
                 if ( strResp != "" ) {
                     receiver.getResponseBody(strResp);
                 }

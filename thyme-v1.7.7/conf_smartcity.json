@@ -1,0 +1,35 @@
+{
+    "useprotocol": "http",
+    "cse": {
+        "conf.cse.host": "61.40.220.158",
+        "conf.cse.port": "20001",
+        "cbname": "~/CB00010/mobius-yt",
+        "cbcseid": "/CB00010",
+        "mqttport": "20003"
+    },
+    "ae": {
+        "aeid": "S000000000003067428332",
+        "conf.ae.appid": "0.2.481.1.1",
+        "conf.ae.name": "ae-edu0",
+        "appport": "9727",
+        "bodytype": "xml",
+        "tasport": "3105"
+    },
+    "cnt": [
+        {
+            "parent": "/ae-edu0",
+            "ctname": "cnt-co2"
+        },
+        {
+            "parent": "/ae-edu0",
+            "ctname": "cnt-led"
+        }
+    ],
+    "sub": [
+        {
+            "parent": "/ae-edu0/cnt-led",
+            "name": "sub-ctrl",
+            "nu": "mqtt:///oneM2M/req/:CB00010/S000000000003067428332"
+        }
+    ]
+}

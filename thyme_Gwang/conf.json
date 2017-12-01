@@ -1,0 +1,37 @@
+{
+    "useprotocol": "http",
+    "usesecure": "disable",
+    "cse": {
+        "host": "58.233.226.102",
+        "port": "7579",
+        "name": "mobius-yt",
+        "id": "/mobius-yt",
+        "mqttport": "1883"
+    },
+    "ae": {
+        "id": "adn-ae-Gwang",
+        "parent": "/mobius-yt",
+        "name": "adn-ae-Gwang",
+        "appid": "4.2.801.916.0.130",
+        "port": "9727",
+        "bodytype": "xml",
+        "tasport": "3105"
+    },
+    "cnt": [
+        {
+            "parent": "/mobius-yt/adn-ae-Gwang",
+            "name": "cnt-1119"
+        },
+        {
+            "parent": "/mobius-yt/adn-ae-Gwang",
+            "name": "cnt-1120"
+        }
+    ],
+    "sub": [
+        {
+            "parent": "/mobius-yt/adn-ae-Gwang/cnt-1120",
+            "name": "sub-ctrl",
+            "nu": "http://58.233.226.102:9727/noti"
+        }
+    ]
+}

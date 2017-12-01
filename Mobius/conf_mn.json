@@ -1,0 +1,12 @@
+{
+    "parent" : {
+        "cbname": "HPE_IoT",
+        "cbcseid": "CSE1000",
+        "cbhost": "192.168.1.127",
+        "cbhostport": "17374",
+        "cbprotocol": "http",
+        "mqttbroker": "192.168.1.127"
+    },
+    "csebaseport": "7599",
+    "dbpass": "dksdlfduq2"
+}

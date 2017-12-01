@@ -102,40 +102,40 @@ exports.coap_watchdog = function () {
         if(pxycoap_server == null) {
             pxycoap_server = coap.createServer();
             pxycoap_server.listen(usecsebaseport, function() {
-                // var options = {
-                //     host: 'localhost',
-                //     port: usecsebaseport,
-                //     pathname: '/'+usecsebase,
-                //     method: 'get',
-                //     confirmable: 'false',
-                //     options: {
-                //         'Accept': 'application/json'
-                //     }
-                // };
-                //
-                // var bodyString = '';
-                // var responseBody = '';
-                // var req = coap.request(options);
-                // req.setOption("256", new Buffer(usecseid));      // X-M2M-Origin
-                // req.setOption("257", new Buffer('hello'));    // X-M2M-RI
-                // req.on('response', function (res) {
-                //     res.on('data', function () {
-                //         responseBody += res.payload.toString();
-                //     });
-                //
-                //     res.on('end', function () {
-                //         if(res.code == '2.05') {
-                //             coap_state = 'ready';
-                //             console.log('[pxy_coap] coap ready');
-                //         }
-                //     });
-                // });
-                // req.on('error', function (e) {
-                //     console.log(e);
-                // });
-                //
-                // req.write(bodyString);
-                // req.end();
+                var options = {
+                    host: 'localhost',
+                    port: usecsebaseport,
+                    pathname: '/mobius-yt',
+                    method: 'get',
+                    confirmable: 'true',
+                    options: {
+                        'Accept': 'application/json'
+                    }
+                };
+
+                var bodyString = '';
+                var responseBody = '';
+                var req = coap.request(options);
+                req.setOption("256", new Buffer(usecseid));      // X-M2M-Origin
+                req.setOption("257", new Buffer('hello'));    // X-M2M-RI
+                req.on('response', function (res) {
+                    res.on('data', function () {
+                        responseBody += res.payload.toString();
+                    });
+
+                    res.on('end', function () {
+                        if(res.code === '2.05') {
+                            coap_state = 'ready';
+                            console.log('[pxy_coap] coap ready');
+                        }
+                    });
+                });
+                req.on('error', function (e) {
+                    console.log(e);
+                });
+
+                req.write(bodyString);
+                req.end();
             });
 
 
@@ -160,13 +160,13 @@ function coap_message_handler(request, response) {
     // check coap options
     for (var idx in request.options) {
         if (request.options.hasOwnProperty(idx)) {
-            if (request.options[idx].name == '256') { // 'X-M2M-Origin
+            if (request.options[idx].name === '256') { // 'X-M2M-Origin
                 headers['X-M2M-Origin'] = request.options[idx].value.toString();
             }
-            else if (request.options[idx].name == '257') { // 'X-M2M-RI
+            else if (request.options[idx].name === '257') { // 'X-M2M-RI
                 headers['X-M2M-RI'] = request.options[idx].value.toString();
             }
-            else if (request.options[idx].name == '267') { // 'X-M2M-TY
+            else if (request.options[idx].name === '267') { // 'X-M2M-TY
                 headers['X-M2M-TY'] = Buffer.isBuffer(request.options[idx].value) ? request.options[idx].value[0].toString() : request.options[idx].value.toString();
             }
         }
@@ -179,7 +179,7 @@ function coap_message_handler(request, response) {
 
     if(request.headers['Content-Type'])
     {
-        if(headers['X-M2M-TY'] == '') {
+        if(headers['X-M2M-TY'] === '') {
             headers['Content-Type'] = request.headers['Content-Type'];
         }
         else {
@@ -213,11 +213,6 @@ function coap_message_handler(request, response) {
                 var rsc = new Buffer(2);
                 rsc.writeUInt16BE(parseInt(res.headers['x-m2m-rsc'], 'hex'), 0);
                 response.setOption("265", rsc);    // X-M2M-RSC
-                //var rqi = new Buffer(2);
-                //rqi.writeUInt16BE(parseInt(res.headers['x-m2m-ri'], 'hex'), 0);
-                //var rqi = res.headers['x-m2m-ri'];
-                var rqi = Buffer.from(res.headers['x-m2m-ri'], 'utf-8');
-                response.setOption("257", rqi);    // X-M2M-RQI
                 if (res.headers['content-type']) {
                     response.setOption("Content-Format", res.headers['content-type']);
                 }
@@ -249,9 +244,6 @@ function coap_message_handler(request, response) {
                 var rsc = new Buffer(2);
                 rsc.writeUInt16BE(parseInt(res.headers['x-m2m-rsc'], 'hex'), 0);
                 response.setOption("265", rsc);    // X-M2M-RSC
-                var rqi = new Buffer(2);
-                rqi.writeUInt16BE(parseInt(res.headers['x-m2m-ri'], 'hex'), 0);
-                response.setOption("257", rqi);    // X-M2M-RQI
                 if (res.headers['content-type']) {
                     response.setOption("Content-Format", res.headers['content-type']);
                 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017, KETI
+ * Copyright (c) 2015, OCEAN
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -9,9 +9,7 @@
  */
 
 /**
- * @file
- * @copyright KETI Korea 2017, OCEAN
- * @author Il Yeup Ahn [iyahn@keti.re.kr]
+ * Created by ryeubi on 2015-10-19.
  */
 
 var mysql = require('mysql');
@@ -38,7 +36,7 @@ exports.connect = function (host, port, user, password, callback) {
     callback('1');
 };
 
-
+//DB와 연결이 확인되면 쿼리를 날리는 함수
 function executeQuery(pool, query, callback) {
     pool.getConnection(function (err, connection) {
         if (err) {
@@ -60,6 +58,7 @@ function executeQuery(pool, query, callback) {
 }
 
 
+// 쿼리를 받아와서 executeQuery 로 실행시킴
 exports.getResult = function(query, db_Obj, callback) {
     if(mysql_pool == null) {
         console.error("mysql is not connected");

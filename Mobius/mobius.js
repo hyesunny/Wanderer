@@ -23,8 +23,8 @@ global.defaultbodytype      = 'json';
 
 // my CSE information
 global.usecsetype           = 'in'; // select 'in' or 'mn' or asn'
-global.usecsebase           = 'mobius-yt';
-global.usecseid             = '/mobius-yt';
+global.usecsebase           = '/Mobius';
+global.usecseid             = '/Mobius';
 global.usecsebaseport       = conf.csebaseport;
 
 global.usedbhost            = 'localhost';

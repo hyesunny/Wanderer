@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017, KETI
+ * Copyright (c) 2015, OCEAN
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -10,7 +10,7 @@
 
 /**
  * @file
- * @copyright KETI Korea 2017, OCEAN
+ * @copyright KETI Korea 2015, OCEAN
  * @author Il Yeup Ahn [iyahn@keti.re.kr]
  */
 
@@ -85,7 +85,7 @@ exports.build_cin = function(request, response, resource_Obj, body_Obj, callback
     }
 
     // check M
-    if(body_Obj[rootnm].con == null) {
+    if(!body_Obj[rootnm].con) {
         body_Obj = {};
         body_Obj['dbg'] = 'con as M Tag should be included';
         responder.response_result(request, response, 400, body_Obj, 4000, request.url, body_Obj['dbg']);
@@ -94,38 +94,9 @@ exports.build_cin = function(request, response, resource_Obj, body_Obj, callback
     }
 
     // body
-    if(body_Obj[rootnm].con['$'] != null) {
-        resource_Obj[rootnm].con = body_Obj[rootnm].con['_'];
-    }
-    else {
-        resource_Obj[rootnm].con = body_Obj[rootnm].con;
-    }
-    /*if (Array.isArray(body_Obj[rootnm].con)) {
-        return 'array';
-    }
-    else if (typeof body_Obj[rootnm].con == 'string') {
-        return 'string';
-    }
-    else if (body_Obj[rootnm].con != null && typeof body_Obj[rootnm].con == 'object') {
-        if(body_Obj[rootnm].con['$'] != null) {
+    resource_Obj[rootnm].con = body_Obj[rootnm].con;
+    resource_Obj[rootnm].cs = Buffer.byteLength(resource_Obj[rootnm].con, 'utf8').toString();
 
-        }
-        else {
-            resource_Obj[rootnm].con = body_Obj[rootnm].con;
-        }
-    }
-    else {
-        return 'other';
-    }*/
-
-    if(getType(resource_Obj[rootnm].con) == 'string') {
-        resource_Obj[rootnm].cs = Buffer.byteLength(resource_Obj[rootnm].con, 'utf8').toString();
-    }
-    else {
-        resource_Obj[rootnm].cs = Buffer.byteLength(JSON.stringify(resource_Obj[rootnm].con), 'utf8').toString();
-    }
-
-    make_sp_relative((body_Obj[rootnm].acpi) ? body_Obj[rootnm].acpi : []);
     resource_Obj[rootnm].acpi = (body_Obj[rootnm].acpi) ? body_Obj[rootnm].acpi : [];
     resource_Obj[rootnm].et = (body_Obj[rootnm].et) ? body_Obj[rootnm].et : resource_Obj[rootnm].et;
     resource_Obj[rootnm].lbl = (body_Obj[rootnm].lbl) ? body_Obj[rootnm].lbl : [];

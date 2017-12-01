@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017, KETI
+ * Copyright (c) 2015, OCEAN
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -10,7 +10,7 @@
 
 /**
  * @file
- * @copyright KETI Korea 2017, OCEAN
+ * @copyright KETI Korea 2015, OCEAN
  * @author Il Yeup Ahn [iyahn@keti.re.kr]
  */
 
@@ -39,7 +39,8 @@ function retrieve_CSEBase_http(cbname, cbhost, cbhostport, callback) {
         headers: {
             'X-M2M-RI': rqi,
             'Accept': 'application/'+defaultbodytype,
-            'X-M2M-Origin': usecseid
+            'X-M2M-Origin': usecseid,
+            'nmtype': defaultnmtype
         }
     };
 
@@ -143,19 +144,19 @@ function create_remoteCSE_http(cbname, cbhost, cbhostport, body_Obj, callback) {
             if(body_Obj.hasOwnProperty(index)) {
                 for (var attr in body_Obj[index]) {
                     if(body_Obj[index].hasOwnProperty(attr)) {
-                        if (attr == 'rn') {
+                        if (attr == 'resourceName' || attr == 'rn') {
                             xml.att(attr, body_Obj[index][attr]);
                         }
-                        else if (attr == 'acpi') {
+                        else if (attr == 'accessControlPolicyIDs' || attr == 'acpi') {
                             xml.ele(attr, body_Obj[index][attr].toString().replace(/,/g, ' '));
                         }
-                        else if (attr == 'lbl') {
+                        else if (attr == 'labels' || attr == 'lbl') {
                             xml.ele(attr, body_Obj[index][attr].toString().replace(/,/g, ' '));
                         }
-                        else if (attr == 'srt') {
+                        else if (attr == 'supportedResourceType' || attr == 'srt') {
                             xml.ele(attr, body_Obj[index][attr].toString().replace(/,/g, ' '));
                         }
-                        else if (attr == 'poa') {
+                        else if (attr == 'pointOfAccess' || attr == 'poa') {
                             xml.ele(attr, body_Obj[index][attr].toString().replace(/,/g, ' '));
                         }
                         else {
@@ -180,6 +181,7 @@ function create_remoteCSE_http(cbname, cbhost, cbhostport, body_Obj, callback) {
             'Accept': 'application/'+defaultbodytype,
             'X-M2M-Origin': usecseid,
             'Content-Type': 'application/'+defaultbodytype+';ty=16',
+            'nmtype': defaultnmtype
         }
     };
 

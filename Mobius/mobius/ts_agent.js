@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017, KETI
+ * Copyright (c) 2015, OCEAN
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -10,7 +10,7 @@
 
 /**
  * @file Main code of Mobius Yellow. Role of flow router
- * @copyright KETI Korea 2017, OCEAN
+ * @copyright KETI Korea 2015, OCEAN
  * @author Il Yeup Ahn [iyahn@keti.re.kr]
  */
 
@@ -363,25 +363,21 @@ ts_app.delete('/missingDataDetect', onem2mParser, function(request, response) {
     });
     request.on('end', function() {
         request.body = fullBody;
-        if(request.body === '') {
+        var jsonObj = JSON.parse(request.body);
+        var ri = jsonObj.ts.ri;
+        if(ts_timer[ri] != null) {
+            ts_timer[ri].removeAllListeners(ri);
+            delete ts_timer[ri];
         }
-        else {
-            var jsonObj = JSON.parse(request.body);
-            var ri = jsonObj.ts.ri;
-            if (ts_timer[ri] != null) {
-                ts_timer[ri].removeAllListeners(ri);
-                delete ts_timer[ri];
-            }
 
-            if (ts_timer_id[ri] != null) {
-                clearInterval(ts_timer_id[ri]);
-                delete ts_timer_id[ri];
-            }
+        if(ts_timer_id[ri] != null) {
+            clearInterval(ts_timer_id[ri]);
+            delete ts_timer_id[ri];
         }
 
         var rsc = {};
         rsc.status = 2000;
-        rsc.ri = request.url;
+        rsc.ri = ri;
         console.log(rsc.status + ' - ' + rsc.ri);
         response.setHeader('X-M2M-RSC', '2000');
         response.status(200).end(JSON.stringify(rsc));

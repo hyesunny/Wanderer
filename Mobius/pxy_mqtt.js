@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2017, KETI
+ * Copyright (c) 2015, OCEAN
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
  * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
@@ -10,7 +10,7 @@
 
 /**
  * @file
- * @copyright KETI Korea 2017, OCEAN
+ * @copyright KETI Korea 2015, OCEAN
  * @author Il Yeup Ahn [iyahn@keti.re.kr]
  */
 
@@ -27,7 +27,6 @@ var url = require('url');
 var xmlbuilder = require('xmlbuilder');
 var moment = require('moment');
 var ip = require("ip");
-var cbor = require('cbor');
 
 //var resp_mqtt_client_arr = [];
 //var req_mqtt_client_arr = [];
@@ -88,7 +87,7 @@ exports.mqtt_watchdog = function() {
     }
     else if(mqtt_state === 'connect') {
         http_retrieve_CSEBase(function(status, res_body) {
-            if (status == '2000') {
+            if (status === '2000') {
                 var jsonObj = JSON.parse(res_body);
                 usecseid = jsonObj['m2m:cb'].csi;
 
@@ -101,34 +100,13 @@ exports.mqtt_watchdog = function() {
     }
     else if(mqtt_state === 'connecting') {
         if(pxymqtt_client == null) {
-            if(usesecure === 'disable') {
-                pxymqtt_client = mqtt.connect('mqtt://' + usemqttbroker + ':' + usemqttport);
-            }
-            else {
-                var connectOptions = {
-                    host: usemqttbroker,
-                    port: usemqttport,
-                    protocol: "mqtts",
-                    keepalive: 10,
-       //             clientId: serverUID,
-                    protocolId: "MQTT",
-                    protocolVersion: 4,
-                    clean: true,
-                    reconnectPeriod: 2000,
-                    connectTimeout: 2000,
-                    key: fs.readFileSync("./server-key.pem"),
-                    cert: fs.readFileSync("./server-crt.pem"),
-                    rejectUnauthorized: false
-                };
-                pxymqtt_client = mqtt.connect(connectOptions);
-            }
-
+            pxymqtt_client = mqtt.connect('mqtt://' + usemqttbroker + ':' + usemqttport);
             pxymqtt_client.on('connect', function () {
                 req_sub(pxymqtt_client);
                 reg_req_sub(pxymqtt_client);
-                //resp_sub(pxymqtt_client);
+                resp_sub(pxymqtt_client);
                 mqtt_state = 'ready';
-                
+
                 require('./mobius/ts_agent');
             });
 
@@ -172,109 +150,107 @@ function reg_req_sub(mqtt_client) {
 }
 
 function make_json_obj(bodytype, str, callback) {
-    try {
-        if (bodytype === 'xml') {
-            var message = str;
-            var parser = new xml2js.Parser({explicitArray: false});
-            parser.parseString(message.toString(), function (err, result) {
-                if (err) {
-                    console.log('[mqtt make json obj] xml2js parser error]');
-                    callback('0');
-                }
-                else {
-                    for (var prop in result) {
-                        if (result.hasOwnProperty(prop)) {
-                            for (var attr in result[prop]) {
-                                if (result[prop].hasOwnProperty(attr)) {
-                                    if (attr == '$') {
-                                        delete result[prop][attr];
-                                    }
-                                    else if (attr == 'pc') {
-                                        for (var attr2 in result[prop][attr]) {
-                                            if (result[prop][attr].hasOwnProperty(attr2)) {
-                                                if (result[prop][attr][attr2].at) {
-                                                    result[prop][attr][attr2].at = result[prop][attr][attr2].at.split(' ');
-                                                }
+    if(bodytype == 'xml') {
+        var message = str;
+        var parser = new xml2js.Parser({explicitArray: false});
+        parser.parseString(message.toString(), function (err, result) {
+            if (err) {
+                console.log('[mqtt make json obj] xml2js parser error]');
+                callback('0');
+            }
+            else {
+                for (var prop in result) {
+                    if (result.hasOwnProperty(prop)) {
+                        for (var attr in result[prop]) {
+                            if (result[prop].hasOwnProperty(attr)) {
+                                if (attr == '$') {
+                                    delete result[prop][attr];
+                                }
+                                else if (attr == 'pc') {
+                                    for (var attr2 in result[prop][attr]) {
+                                        if (result[prop][attr].hasOwnProperty(attr2)) {
+                                            if (result[prop][attr][attr2].at) {
+                                                result[prop][attr][attr2].at = result[prop][attr][attr2].at.split(' ');
+                                            }
 
-                                                if (result[prop][attr][attr2].aa) {
-                                                    result[prop][attr][attr2].aa = result[prop][attr][attr2].aa.split(' ');
-                                                }
+                                            if (result[prop][attr][attr2].aa) {
+                                                result[prop][attr][attr2].aa = result[prop][attr][attr2].aa.split(' ');
+                                            }
 
-                                                if (result[prop][attr][attr2].poa) {
-                                                    result[prop][attr][attr2].poa = result[prop][attr][attr2].poa.split(' ');
-                                                }
+                                            if (result[prop][attr][attr2].poa) {
+                                                result[prop][attr][attr2].poa = result[prop][attr][attr2].poa.split(' ');
+                                            }
 
-                                                if (result[prop][attr][attr2].lbl) {
-                                                    result[prop][attr][attr2].lbl = result[prop][attr][attr2].lbl.split(' ');
-                                                }
+                                            if (result[prop][attr][attr2].lbl) {
+                                                result[prop][attr][attr2].lbl = result[prop][attr][attr2].lbl.split(' ');
+                                            }
 
-                                                if (result[prop][attr][attr2].acpi) {
-                                                    result[prop][attr][attr2].acpi = result[prop][attr][attr2].acpi.split(' ');
-                                                }
+                                            if (result[prop][attr][attr2].acpi) {
+                                                result[prop][attr][attr2].acpi = result[prop][attr][attr2].acpi.split(' ');
+                                            }
 
-                                                if (result[prop][attr][attr2].srt) {
-                                                    result[prop][attr][attr2].srt = result[prop][attr][attr2].srt.split(' ');
-                                                }
+                                            if (result[prop][attr][attr2].srt) {
+                                                result[prop][attr][attr2].srt = result[prop][attr][attr2].srt.split(' ');
+                                            }
 
-                                                if (result[prop][attr][attr2].nu) {
-                                                    result[prop][attr][attr2].nu = result[prop][attr][attr2].nu.split(' ');
-                                                }
+                                            if (result[prop][attr][attr2].nu) {
+                                                result[prop][attr][attr2].nu = result[prop][attr][attr2].nu.split(' ');
+                                            }
 
-                                                if (result[prop][attr][attr2].enc) {
-                                                    if (result[prop][attr][attr2].enc.net) {
-                                                        result[prop][attr][attr2].enc.net = result[prop][attr][attr2].enc.net.split(' ');
+                                            if (result[prop][attr][attr2].enc) {
+                                                if(result[prop][attr][attr2].enc.net) {
+                                                    result[prop][attr][attr2].enc.net = result[prop][attr][attr2].enc.net.split(' ');
+                                                }
+                                            }
+
+                                            if (result[prop][attr][attr2].pv) {
+                                                if(result[prop][attr][attr2].pv.acr) {
+                                                    if (!Array.isArray(result[prop][attr][attr2].pv.acr)) {
+                                                        var temp = result[prop][attr][attr2].pv.acr;
+                                                        result[prop][attr][attr2].pv.acr = [];
+                                                        result[prop][attr][attr2].pv.acr[0] = temp;
                                                     }
-                                                }
 
-                                                if (result[prop][attr][attr2].pv) {
-                                                    if (result[prop][attr][attr2].pv.acr) {
-                                                        if (!Array.isArray(result[prop][attr][attr2].pv.acr)) {
-                                                            var temp = result[prop][attr][attr2].pv.acr;
-                                                            result[prop][attr][attr2].pv.acr = [];
-                                                            result[prop][attr][attr2].pv.acr[0] = temp;
-                                                        }
-
-                                                        for (var acr_idx in result[prop][attr][attr2].pv.acr) {
-                                                            if (result[prop][attr][attr2].pv.acr.hasOwnProperty(acr_idx)) {
-                                                                if (result[prop][attr][attr2].pv.acr[acr_idx].acor) {
-                                                                    result[prop][attr][attr2].pv.acr[acr_idx].acor = result[prop][attr][attr2].pv.acr[acr_idx].acor.split(' ');
-                                                                }
+                                                    for (var acr_idx in result[prop][attr][attr2].pv.acr) {
+                                                        if (result[prop][attr][attr2].pv.acr.hasOwnProperty(acr_idx)) {
+                                                            if (result[prop][attr][attr2].pv.acr[acr_idx].acor) {
+                                                                result[prop][attr][attr2].pv.acr[acr_idx].acor = result[prop][attr][attr2].pv.acr[acr_idx].acor.split(' ');
                                                             }
                                                         }
                                                     }
                                                 }
+                                            }
 
-                                                if (result[prop][attr][attr2].pvs) {
-                                                    if (result[prop][attr][attr2].pvs.acr) {
-                                                        if (!Array.isArray(result[prop][attr][attr2].pvs.acr)) {
-                                                            temp = result[prop][attr][attr2].pvs.acr;
-                                                            result[prop][attr][attr2].pvs.acr = [];
-                                                            result[prop][attr][attr2].pvs.acr[0] = temp;
-                                                        }
+                                            if (result[prop][attr][attr2].pvs) {
+                                                if(result[prop][attr][attr2].pvs.acr) {
+                                                    if (!Array.isArray(result[prop][attr][attr2].pvs.acr)) {
+                                                        temp = result[prop][attr][attr2].pvs.acr;
+                                                        result[prop][attr][attr2].pvs.acr = [];
+                                                        result[prop][attr][attr2].pvs.acr[0] = temp;
+                                                    }
 
-                                                        for (acr_idx in result[prop][attr][attr2].pvs.acr) {
-                                                            if (result[prop][attr][attr2].pvs.acr.hasOwnProperty(acr_idx)) {
-                                                                if (result[prop][attr][attr2].pvs.acr[acr_idx].acor) {
-                                                                    result[prop][attr][attr2].pvs.acr[acr_idx].acor = result[prop][attr][attr2].pvs.acr[acr_idx].acor.split(' ');
-                                                                }
+                                                    for (acr_idx in result[prop][attr][attr2].pvs.acr) {
+                                                        if (result[prop][attr][attr2].pvs.acr.hasOwnProperty(acr_idx)) {
+                                                            if (result[prop][attr][attr2].pvs.acr[acr_idx].acor) {
+                                                                result[prop][attr][attr2].pvs.acr[acr_idx].acor = result[prop][attr][attr2].pvs.acr[acr_idx].acor.split(' ');
                                                             }
                                                         }
                                                     }
                                                 }
+                                            }
 
-                                                if (result[prop][attr][attr2].mid) {
-                                                    result[prop][attr][attr2].mid = result[prop][attr][attr2].mid.split(' ');
-                                                }
+                                            if (result[prop][attr][attr2].mid) {
+                                                result[prop][attr][attr2].mid = result[prop][attr][attr2].mid.split(' ');
+                                            }
 
-                                                if (result[prop][attr][attr2].macp) {
-                                                    result[prop][attr][attr2].macp = result[prop][attr][attr2].macp.split(' ');
-                                                }
+                                            if (result[prop][attr][attr2].macp) {
+                                                result[prop][attr][attr2].macp = result[prop][attr][attr2].macp.split(' ');
+                                            }
 
-                                                if (result[prop][attr][attr2]['$']) {
-                                                    if (result[prop][attr][attr2]['$'].rn && result[prop][attr][attr2]['$'].rn != '') {
-                                                        result[prop][attr][attr2].rn = result[prop][attr][attr2]['$'].rn;
-                                                        delete result[prop][attr][attr2]['$'];
-                                                    }
+                                            if(result[prop][attr][attr2]['$']) {
+                                                if (result[prop][attr][attr2]['$'].rn && result[prop][attr][attr2]['$'].rn != '') {
+                                                    result[prop][attr][attr2].rn = result[prop][attr][attr2]['$'].rn;
+                                                    delete result[prop][attr][attr2]['$'];
                                                 }
                                             }
                                         }
@@ -283,37 +259,24 @@ function make_json_obj(bodytype, str, callback) {
                             }
                         }
                     }
-                    callback('1', result);
                 }
-            });
-        }
-        else if (bodytype === 'cbor') {
-            cbor.decodeFirst(str, function(err, result) {
-                if (err) {
-                    console.log('[mqtt make json obj] cbor parser error]');
-                }
-                else {
-                    callback('1', result);
-                }
-            });
-        }
-        else {
-            var result = JSON.parse(str);
-            callback('1', result);
-        }
+                callback('1', result);
+            }
+        });
     }
-    catch (e) {
-        console.error(e.message);
-        callback('0');
+    else {
+        var result = JSON.parse(str);
+        callback('1', result);
     }
 }
 
 function mqtt_message_handler(topic, message) {
-    console.log('----> ' + topic);
-    console.log(message.toString());
+    console.log(topic);
+    //console.log(message.toString());
     var topic_arr = topic.split("/");
     if(topic_arr[5] != null) {
-        var bodytype = (topic_arr[5] == 'xml') ? topic_arr[5] : ((topic_arr[5] == 'json') ? topic_arr[5] : ((topic_arr[5] == 'cbor') ? topic_arr[5] : 'json'));
+        //var bodytype = (topic_arr[5] == 'xml') ? topic_arr[5] : ((topic_arr[5] == 'json') ? topic_arr[5] : 'json');
+        var bodytype = (topic_arr[5] == 'xml') ? topic_arr[5] : 'json';
     }
     else {
         bodytype = defaultbodytype;
@@ -323,10 +286,6 @@ function mqtt_message_handler(topic, message) {
     if((topic_arr[1] == 'oneM2M' && topic_arr[2] == 'resp' && ((topic_arr[3].replace(':', '/') == usecseid) || (topic_arr[3] == usecseid.replace('/', ''))))) {
         make_json_obj(bodytype, message.toString(), function(rsc, jsonObj) {
             if(rsc == '1') {
-                if(jsonObj['m2m:rsp'] == null) {
-                    jsonObj['m2m:rsp'] = jsonObj;
-                }
-
                 if (jsonObj['m2m:rsp'] != null) {
                     for (var i = 0; i < resp_mqtt_rqi_arr.length; i++) {
                         if (resp_mqtt_rqi_arr[i] == jsonObj['m2m:rsp'].rqi) {
@@ -336,23 +295,20 @@ function mqtt_message_handler(topic, message) {
                             http_response_q[resp_mqtt_rqi_arr[i]].setHeader('X-M2M-RI', resp_mqtt_rqi_arr[i]);
 
                             var status_code = '404';
-                            if(jsonObj['m2m:rsp'].rsc == '4105') {
+                            if(jsonObj['m2m:rsp'].rsc === '4105') {
                                 status_code = '409';
                             }
-                            else if(jsonObj['m2m:rsp'].rsc == '2000') {
+                            else if(jsonObj['m2m:rsp'].rsc === '2000') {
                                 status_code = '200';
                             }
-                            else if(jsonObj['m2m:rsp'].rsc == '2001') {
+                            else if(jsonObj['m2m:rsp'].rsc === '2001') {
                                 status_code = '201';
                             }
-                            else if(jsonObj['m2m:rsp'].rsc == '4000') {
+                            else if(jsonObj['m2m:rsp'].rsc === '4000') {
                                 status_code = '400';
                             }
-                            else if(jsonObj['m2m:rsp'].rsc == '5000') {
+                            else if(jsonObj['m2m:rsp'].rsc === '5000') {
                                 status_code = '500';
-                            }
-                            else {
-
                             }
 
                             http_response_q[resp_mqtt_rqi_arr[i]].status(status_code).end(JSON.stringify(jsonObj['m2m:rsp'].pc));
@@ -365,50 +321,19 @@ function mqtt_message_handler(topic, message) {
                     }
                 }
             }
-            else {
-                var resp_topic = '/oneM2M/resp/';
-                if (topic_arr[2] === 'reg_req') {
-                    resp_topic = '/oneM2M/reg_resp/';
-                }
-                resp_topic += (topic_arr[3] + '/' + topic_arr[4] + '/' + topic_arr[5]);
-                mqtt_response(pxymqtt_client, resp_topic, 4000, '', '', '', 'to parsing error', bodytype);
-            }
         });
     }
     else if(topic_arr[1] === 'oneM2M' && topic_arr[2] === 'req' && ((topic_arr[4].replace(':', '/') == usecseid) || (topic_arr[4] == usecseid.replace('/', '')))) {
         make_json_obj(bodytype, message.toString(), function(rsc, result) {
-            if(rsc == '1') {
-                if(result && result['m2m:rqp'] == null) {
-                    result['m2m:rqp'] = result;
-                }
-
+            if(rsc === '1') {
                 mqtt_message_action(pxymqtt_client, topic_arr, bodytype, result);
-            }
-            else {
-                var resp_topic = '/oneM2M/resp/';
-                if (topic_arr[2] === 'reg_req') {
-                    resp_topic = '/oneM2M/reg_resp/';
-                }
-                resp_topic += (topic_arr[3] + '/' + topic_arr[4] + '/' + topic_arr[5]);
-                mqtt_response(pxymqtt_client, resp_topic, 4000, '', '', '', 'to parsing error', bodytype);
             }
         });
     }
     else if(topic_arr[1] === 'oneM2M' && topic_arr[2] === 'reg_req' && ((topic_arr[4].replace(':', '/') == usecseid) || (topic_arr[4] == usecseid.replace('/', '')))) {
         make_json_obj(bodytype, message.toString(), function(rsc, result) {
-            if(result['m2m:rqp'] == null) {
-                result['m2m:rqp'] = result;
-            }
             if(rsc == '1') {
                 mqtt_message_action(pxymqtt_client, topic_arr, bodytype, result);
-            }
-            else {
-                var resp_topic = '/oneM2M/resp/';
-                if (topic_arr[2] === 'reg_req') {
-                    resp_topic = '/oneM2M/reg_resp/';
-                }
-                resp_topic += (topic_arr[3] + '/' + topic_arr[4] + '/' + topic_arr[5]);
-                mqtt_response(pxymqtt_client, resp_topic, 4000, '', '', '', 'to parsing error', bodytype);
             }
         });
     }
@@ -473,14 +398,7 @@ function mqtt_message_action(mqtt_client, topic_arr, bodytype, jsonObj) {
         }
     }
     else {
-        console.log('mqtt message tag is not different : m2m:rqp');
-
-        resp_topic = '/oneM2M/resp/';
-        if (topic_arr[2] == 'reg_req') {
-            resp_topic = '/oneM2M/reg_resp/';
-        }
-        resp_topic += (topic_arr[3] + '/' + topic_arr[4] + '/' + topic_arr[5]);
-        mqtt_response(mqtt_client, resp_topic, 4000, "", usecseid, "", '\"m2m:dbg\":\"mqtt message tag is different : m2m:rqp\"', bodytype);
+        console.log('mqtt message tag is not fit');
     }
 }
 
@@ -588,43 +506,78 @@ function mqtt_response(mqtt_client, resp_topic, rsc, to, fr, rqi, inpc, bodytype
     rsp_message['m2m:rsp'].rqi = rqi;
     rsp_message['m2m:rsp'].pc = inpc;
 
-    if (bodytype == 'xml') {
-        rsp_message['m2m:rsp']['@'] = {
-            "xmlns:m2m": "http://www.onem2m.org/xml/protocols",
-            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
-        };
+    if(rqi == 'keti') {
+        for(var attr in inpc) {
+            if(inpc.hasOwnProperty(attr)) {
+                if (inpc[attr].ty) {
+                    delete inpc[attr].ty;
+                }
 
-        for(var prop in rsp_message['m2m:rsp'].pc) {
-            if (rsp_message['m2m:rsp'].pc.hasOwnProperty(prop)) {
-                for(var prop2 in rsp_message['m2m:rsp'].pc[prop]) {
-                    if (rsp_message['m2m:rsp'].pc[prop].hasOwnProperty(prop2)) {
-                        if(prop2 == 'rn') {
-                            rsp_message['m2m:rsp'].pc[prop]['@'] = {rn : rsp_message['m2m:rsp'].pc[prop][prop2]};
-                            delete rsp_message['m2m:rsp'].pc[prop][prop2];
-                        }
-                        for(var prop3 in rsp_message['m2m:rsp'].pc[prop][prop2]) {
-                            if (rsp_message['m2m:rsp'].pc[prop][prop2].hasOwnProperty(prop3)) {
-                                if(prop3 == 'rn') {
-                                    rsp_message['m2m:rsp'].pc[prop][prop2]['@'] = {rn : rsp_message['m2m:rsp'].pc[prop][prop2][prop3]};
-                                    delete rsp_message['m2m:rsp'].pc[prop][prop2][prop3];
+                if (inpc[attr].ct) {
+                    delete inpc[attr].ct;
+                }
+
+                if (inpc[attr].lt) {
+                    delete inpc[attr].lt;
+                }
+
+                if (inpc[attr].st) {
+                    delete inpc[attr].st;
+                }
+
+                if (inpc[attr].con) {
+                    delete inpc[attr].con;
+                }
+
+                if (inpc[attr].cs) {
+                    delete inpc[attr].cs;
+                }
+
+                if (inpc[attr].rn) {
+                    delete inpc[attr].rn;
+                }
+
+                if (inpc[attr].pi) {
+                    delete inpc[attr].pi;
+                }
+            }
+        }
+    }
+    else {
+        if (bodytype == 'xml') {
+            rsp_message['m2m:rsp']['@'] = {
+                "xmlns:m2m": "http://www.onem2m.org/xml/protocols",
+                "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
+            };
+
+            for(var prop in rsp_message['m2m:rsp'].pc) {
+                if (rsp_message['m2m:rsp'].pc.hasOwnProperty(prop)) {
+                    for(var prop2 in rsp_message['m2m:rsp'].pc[prop]) {
+                        if (rsp_message['m2m:rsp'].pc[prop].hasOwnProperty(prop2)) {
+                            if(prop2 == 'rn') {
+                                rsp_message['m2m:rsp'].pc[prop]['@'] = {rn : rsp_message['m2m:rsp'].pc[prop][prop2]};
+                                delete rsp_message['m2m:rsp'].pc[prop][prop2];
+                            }
+                            for(var prop3 in rsp_message['m2m:rsp'].pc[prop][prop2]) {
+                                if (rsp_message['m2m:rsp'].pc[prop][prop2].hasOwnProperty(prop3)) {
+                                    if(prop3 == 'rn') {
+                                        rsp_message['m2m:rsp'].pc[prop][prop2]['@'] = {rn : rsp_message['m2m:rsp'].pc[prop][prop2][prop3]};
+                                        delete rsp_message['m2m:rsp'].pc[prop][prop2][prop3];
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+
+            var xmlString = js2xmlparser("m2m:rsp", rsp_message['m2m:rsp']);
+
+            mqtt_client.publish(resp_topic, xmlString.toString());
         }
-
-        var bodyString = js2xmlparser.parse("m2m:rsp", rsp_message['m2m:rsp']);
-
-        mqtt_client.publish(resp_topic, bodyString.toString());
-    }
-    else if(bodytype === 'cbor') {
-        bodyString = cbor.encode(rsp_message['m2m:rsp']).toString('hex');
-        mqtt_client.publish(resp_topic, bodyString);
-    }
-    else { // 'json'
-        mqtt_client.publish(resp_topic, JSON.stringify(rsp_message['m2m:rsp']));
+        else { // 'json'
+            mqtt_client.publish(resp_topic, JSON.stringify(rsp_message));
+        }
     }
 }
 
@@ -635,6 +588,182 @@ var onem2mParser = bodyParser.text(
         type: 'application/onem2m-resource+xml;application/xml;application/json;application/vnd.onem2m-res+xml;application/vnd.onem2m-res+json'
     }
 );
+
+mqtt_app.post('/notification', onem2mParser, function(request, response, next) {
+    var fullBody = '';
+    request.on('data', function(chunk) {
+        fullBody += chunk.toString();
+    });
+    request.on('end', function() {
+        request.body = fullBody;
+
+        try {
+            var aeid = url.parse(request.headers.nu).pathname.replace('/', '');
+
+            if (aeid == '') {
+                console.log('aeid of notification url is none');
+                return;
+            }
+
+            if (mqtt_state == 'ready') {
+                var noti_topic = util.format('/oneM2M/req/%s/%s/%s', usecseid.replace('/', ''), aeid, request.headers.bodytype);
+
+                var rqi = request.headers['x-m2m-ri'];
+                resp_mqtt_rqi_arr.push(rqi);
+                http_response_q[rqi] = response;
+
+                var pc = JSON.parse(request.body);
+
+                try {
+                    var noti_message = {};
+                    noti_message['m2m:rqp'] = {};
+                    noti_message['m2m:rqp'].op = 5; // notification
+                    noti_message['m2m:rqp'].net = (pc['sgn'] != null) ? pc.sgn.net : pc.singleNotification.notificationEventType;
+                    noti_message['m2m:rqp'].to = (pc['sgn'] != null) ? pc.sgn.sur : pc.singleNotification.subscriptionReference;
+                    noti_message['m2m:rqp'].fr = usecseid;
+                    noti_message['m2m:rqp'].rqi = rqi;
+
+                    noti_message['m2m:rqp'].pc = pc;
+
+                    if (pc['sgn'] != null) {
+                        if (!pc.sgn.nec) {
+                            var nec = pc.sgn.nec;
+                            delete pc.sgn.nec;
+                        }
+                    }
+                    else {
+                        if (!pc.singleNotification.notificationEventCat) {
+                            nec = pc.singleNotification.notificationEventCat;
+                            delete pc.singleNotification.notificationEventCat;
+                        }
+                    }
+                }
+                catch (e) {
+                    rsp_Obj = {};
+                    rsp_Obj['rsp'] = {};
+                    rsp_Obj['rsp'].dbg = 'notification body message type error';
+                    response.setHeader('X-M2M-RSC', '4000');
+                    response.setHeader('X-M2M-RI', rqi);
+
+                    response.status(400).end(JSON.stringify(rsp_Obj));
+                    return;
+                }
+
+                if (nec == 'keti') { // for mqtt implementation of keti
+                    noti_topic = util.format('/req/%s/%s/%s', usecseid.replace('/', ''), aeid, request.headers.bodytype);
+
+                    noti_message = {};
+                    noti_message['m2m:rqp'] = {};
+                    noti_message['m2m:rqp'].op = 5; // notification
+                    noti_message['m2m:rqp'].rqi = rqi;
+
+                    noti_message['m2m:rqp'].pc = pc;
+
+                    if (pc.sgn.net) {
+                        delete pc.sgn.net;
+                    }
+
+                    if (pc.sgn.sur) {
+                        delete pc.sgn.sur;
+                    }
+
+                    for (var attr in pc.sgn.nev.rep) {
+                        if (pc.sgn.nev.rep.hasOwnProperty(attr)) {
+                            if (pc.sgn.nev.rep[attr].cs) {
+                                delete pc.sgn.nev.rep[attr].cs;
+                            }
+
+                            if (pc.sgn.nev.rep[attr].ct) {
+                                delete pc.sgn.nev.rep[attr].ct;
+                            }
+
+                            if (pc.sgn.nev.rep[attr].lt) {
+                                delete pc.sgn.nev.rep[attr].lt;
+                            }
+
+                            if (pc.sgn.nev.rep[attr].pi) {
+                                delete pc.sgn.nev.rep[attr].pi;
+                            }
+
+                            if (pc.sgn.nev.rep[attr].rn) {
+                                delete pc.sgn.nev.rep[attr].rn;
+                            }
+
+                            if (pc.sgn.nev.rep[attr].st) {
+                                delete pc.sgn.nev.rep[attr].st;
+                            }
+
+                            if (pc.sgn.nev.rep[attr].ty) {
+                                delete pc.sgn.nev.rep[attr].ty;
+                            }
+
+                            if (pc.sgn.nev.rep[attr].ri) {
+                                delete pc.sgn.nev.rep[attr].ri;
+                            }
+                        }
+                    }
+
+                    noti_message['m2m:rqp'] = pc.sgn.nev.rep;
+                    if (request.headers.bodytype == 'xml') {
+                        noti_message['m2m:rqp']['@'] = {
+                            "xmlns:m2m": "http://www.onem2m.org/xml/protocols",
+                            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
+                        };
+
+                        var xmlString = js2xmlparser("m2m:rqp", noti_message['m2m:rqp']);
+
+                        pxymqtt_client.publish(noti_topic, xmlString);
+                        console.log('<---- ' + noti_topic);
+                    }
+                    else { // 'json'
+                        //pxymqtt_client.publish(noti_topic, JSON.stringify(noti_message));
+                        noti_topic = noti_topic.replace('json', 'j');
+                        pxymqtt_client.publish(noti_topic, pc.sgn.nev.rep[attr].con);
+                        console.log('<---- ' + noti_topic);
+                    }
+
+                    console.log('----> 2001');
+                    response.setHeader('X-M2M-RSC', '2001');
+                    response.setHeader('X-M2M-RI', rqi);
+                    response.status(201).end('{\"m2m:rsp\":\"success to receive notification\"}');
+                }
+                else {
+                    noti_message['m2m:rqp'].pc['m2m:sgn'] = noti_message['m2m:rqp'].pc.sgn;
+                    delete noti_message['m2m:rqp'].pc.sgn;
+
+                    if (request.headers.bodytype == 'xml') {
+                        noti_message['m2m:rqp']['@'] = {
+                            "xmlns:m2m": "http://www.onem2m.org/xml/protocols",
+                            "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
+                        };
+
+                        xmlString = js2xmlparser("m2m:rqp", noti_message['m2m:rqp']);
+
+                        pxymqtt_client.publish(noti_topic, xmlString);
+                        console.log('<---- ' + noti_topic);
+                    }
+                    else { // 'json'
+                        pxymqtt_client.publish(noti_topic, JSON.stringify(noti_message));
+                        console.log('<---- ' + noti_topic);
+                    }
+                }
+            }
+            else {
+                console.log('pxymqtt is not ready');
+            }
+        }
+        catch (e) {
+            console.log(e.message);
+            var rsp_Obj = {};
+            rsp_Obj['rsp'] = {};
+            rsp_Obj['rsp'].dbg = 'notificationUrl does not support : ' + request.headers.nu;
+            response.setHeader('X-M2M-RSC', '4000');
+            //response.setHeader('X-M2M-RI', rqi);
+
+            response.status(400).end(JSON.stringify(rsp_Obj));
+        }
+    });
+});
 
 mqtt_app.post('/register_csr', onem2mParser, function(request, response, next) {
     var fullBody = '';
@@ -676,13 +805,13 @@ mqtt_app.post('/register_csr', onem2mParser, function(request, response, next) {
                     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
                 };
 
-                var xmlString = js2xmlparser.parse("m2m:rqp", req_message['m2m:rqp']);
+                var xmlString = js2xmlparser("m2m:rqp", req_message['m2m:rqp']);
 
                 pxymqtt_client.publish(reg_req_topic, xmlString);
                 console.log('<---- ' + reg_req_topic);
             }
             else { // 'json'
-                pxymqtt_client.publish(reg_req_topic, JSON.stringify(req_message['m2m:rqp']));
+                pxymqtt_client.publish(reg_req_topic, JSON.stringify(req_message));
                 console.log('<---- ' + reg_req_topic);
             }
         }
@@ -732,13 +861,13 @@ mqtt_app.get('/get_cb', onem2mParser, function(request, response, next) {
                     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
                 };
 
-                var xmlString = js2xmlparser.parse("m2m:rqp", req_message['m2m:rqp']);
+                var xmlString = js2xmlparser("m2m:rqp", req_message['m2m:rqp']);
 
                 pxymqtt_client.publish(reg_req_topic, xmlString);
                 console.log('<---- ' + reg_req_topic);
             }
             else { // 'json'
-                pxymqtt_client.publish(reg_req_topic, JSON.stringify(req_message['m2m:rqp']));
+                pxymqtt_client.publish(reg_req_topic, JSON.stringify(req_message));
                 console.log('<---- ' + reg_req_topic);
             }
         }
@@ -830,7 +959,7 @@ function forward_mqtt(forward_cseid, op, to, fr, rqi, ty, nm, inpc) {
         "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
     };
 
-    var xmlString = js2xmlparser.parse("m2m:rqp", forward_message);
+    var xmlString = js2xmlparser("m2m:rqp", forward_message);
 
     var forward_topic = util.format('/oneM2M/req/%s/%s', usecseid.replace('/', ':'), forward_cseid);
 

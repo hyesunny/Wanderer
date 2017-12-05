@@ -94,14 +94,14 @@ function del_req_resource() {
 
 function del_expired_resource() {
     // todo : this routine is that delete resource expired time exceed et of resource
-    /*var et = moment().utc().format('YYYYMMDDTHHmmss');
+    var et = moment().utc().utcOffset(9).format('YYYYMMDDTHHmmss');
      db_sql.delete_lookup_et(et, function (err) {
      if(!err) {
      console.log('---------------');
      console.log('delete resources expired et');
      console.log('---------------');
      }
-     });*/
+     });
 }
 
 // 서버가 구동되는 메인 부분, 클러스터에 관한 설명(http://programmingsummaries.tistory.com/384)

@@ -691,7 +691,7 @@ function build_resource(request, response, ty, body_Obj, callback) {
     //var et = new Date();
     //et.setYear(cur_d.getFullYear()+1); // adds time to existing time
     //resource_Obj[rootnm].et = et.toISOString().replace(/-/, '').replace(/-/, '').replace(/:/, '').replace(/:/, '').replace(/\..+/, '');
-    resource_Obj[rootnm].et = moment().utc().utcOffset(9).add(2, 'years').format('YYYYMMDDTHHmmss');
+    resource_Obj[rootnm].et = moment().utc().utcOffset(9).add(1, 'days').format('YYYYMMDDTHHmmss');
     if(ty == 17) {
         resource_Obj[rootnm].et = moment().utc().utcOffset(9).add(1, 'days').format('YYYYMMDDTHHmmss');
     }

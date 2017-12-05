@@ -29,6 +29,7 @@ rawCapture = PiRGBArray(camera, size = (640, 480))
 time.sleep(0.1)
 
 #capture frames from the camera
+count =0
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     #grab the raw Numpy array representing the image, the initialize the timestamp
     #and occupied/unoccupied text
@@ -40,7 +41,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     rects = detect(gray, cascade)
     vis = img.copy()
     draw_rects(vis, rects, (0, 255, 9))
-
+    if len(rects)!=0:
+        count += 1
+        print(str(count) + "Face detected")
     #show the fame
     cv2.imshow("Frame", vis)
     key = cv2.waitKey(1) & 0xFF

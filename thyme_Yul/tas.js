@@ -15,6 +15,7 @@
 // for TAS
 var net = require('net');
 var ip = require('ip');
+var exec = require('child_process').exec;	//add
 
 var socket_arr = {};
 exports.socket_arr = socket_arr;
@@ -24,6 +25,8 @@ exports.buffer = tas_buffer;
 
 
 var t_count = 0;
+
+//timer를 업데이트하는 부분
 function timer_upload_action() {
     if (sh_state == 'crtci') {
         for (var j = 0; j < conf.cnt.length; j++) {
@@ -40,6 +43,7 @@ function timer_upload_action() {
 
 wdt.set_wdt(require('shortid').generate(), 2, timer_upload_action);
 
+//연결
 exports.ready = function ras_ready () {
     net.createServer(function (socket) {
         console.log('socket connected');
@@ -60,7 +64,16 @@ exports.ready = function ras_ready () {
     });
 };
 
+
+//tas로부터 데이터 받는 부분
 function tas_handler (data) {
+	if (data == 'picamupdate') {
+		exec("python /home/pi/wanderer.py", function(error, stdout, stderr) {
+		console.log(stdout);
+		});
+		return 0;
+	}
+	
     // 'this' refers to the socket calling this callback.
     tas_buffer[this.id] += data.toString();
     //console.log(tas_buffer[this.id]);
@@ -121,7 +134,7 @@ function tas_handler (data) {
     }
 }
 
-
+//트위터 api 사용
 exports.send_tweet = function(cinObj) {
     var fs = require('fs');
     var Twitter = require('twitter');
@@ -174,6 +187,7 @@ exports.send_tweet = function(cinObj) {
     }
 };
 
+//tas에게 전송 시 사용
 exports.noti = function(path_arr, cinObj) {
     var cin = {};
     cin.ctname = path_arr[path_arr.length-2];

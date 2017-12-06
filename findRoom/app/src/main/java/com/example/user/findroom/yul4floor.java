@@ -23,6 +23,8 @@ public class yul4floor extends AppCompatActivity {
     public String cnt[] = {"cnt-401","cnt-404"};
     public String pTime[]={"1234","5678"};
     public String cin[]={"8","8"};
+    public String up="0";
+    public int count=2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,10 @@ public class yul4floor extends AppCompatActivity {
         for(i=0;i<2;i++) {
             RetrieveRequest req = new RetrieveRequest();
             req.Numbering(i);
+            if(up.equals("1"))
+                req.IsUpdated("updatelatest");
+            else
+                req.IsUpdated("latest");
             req.RetrieveRequest(cnt[i]);
             req.start();
         }
@@ -86,8 +92,10 @@ public class yul4floor extends AppCompatActivity {
         private IReceived receiver;
         private String ContainerName = "";
         private int Number;
+        private String Update="";
 
         public void Numbering(int number){this.Number=number;}
+        public void IsUpdated(String update){this.Update=update;}
         public void RetrieveRequest(String containerName) {
             this.ContainerName = containerName;
         }
@@ -98,8 +106,7 @@ public class yul4floor extends AppCompatActivity {
         public void run() {
             try {
                 String sb = "http://58.233.226.102:7579/mobius-yt/adn-ae-Yul/"
-                        +ContainerName+"/latest";
-
+                        +ContainerName+"/"+Update;
                 URL mUrl = new URL(sb);
 
                 HttpURLConnection conn = (HttpURLConnection) mUrl.openConnection();
@@ -137,7 +144,14 @@ public class yul4floor extends AppCompatActivity {
 
     public void udClick(View v){
         CheckTypesTask update = new CheckTypesTask();
+        up="1"; count=8;
         startRetrieve();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startRetrieve();
+            }
+        },3000);
         update.execute();
     }
 
@@ -153,7 +167,7 @@ public class yul4floor extends AppCompatActivity {
         }
         protected Void doInBackground(Void... arg0){
             try{
-                for(int i=0;i<3;i++){
+                for(int i=0;i<count;i++){
                     Thread.sleep(500);
                 }
             }catch(InterruptedException e){

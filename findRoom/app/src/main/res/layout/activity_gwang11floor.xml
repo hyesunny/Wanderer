@@ -12,7 +12,8 @@
         android:id="@+id/updatebutton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Update"/>
+        android:text="Update"
+        android:onClick="uClick"/>
 
     <TextView
         android:id="@+id/pTimeText"

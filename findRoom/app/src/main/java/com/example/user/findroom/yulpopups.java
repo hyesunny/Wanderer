@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 public class yulpopups extends Activity {
     public String cin401;
-    public String cin403;
+    public String cin404;
     public double n;
     public int dtoi;
     private TextView txtProgress;
@@ -29,8 +29,8 @@ public class yulpopups extends Activity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         Intent next =getIntent();
         cin401=next.getExtras().getString("cin401");
-        cin403=next.getExtras().getString("cin403");
-        n=(((Double.parseDouble(cin401)+Double.parseDouble(cin403))/(2.0)))*100;
+        cin404=next.getExtras().getString("cin404");
+        n=(((Double.parseDouble(cin401)+Double.parseDouble(cin404))/(2.0)))*100;
         dtoi=(int)n;
         new Handler().postDelayed(new Runnable() {
             @Override

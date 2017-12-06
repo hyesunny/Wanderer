@@ -7,6 +7,12 @@
     android:orientation="vertical"
     tools:context="com.example.user.findroom.yul4floor">
 
+    <Button
+        android:id="@+id/updatebutton_y"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:onClick="udClick"/>
     <TextView
         android:id="@+id/pTimeText_y"
         android:layout_width="wrap_content"
@@ -18,9 +24,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
     <TextView
-        android:id="@+id/pTime403"
+        android:id="@+id/pTime404"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"/>
+    <ImageView
+        android:id="@+id/yulLectureRoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

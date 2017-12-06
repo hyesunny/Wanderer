@@ -30,7 +30,6 @@
             android:layout_below="@id/percent"
             android:textSize="40sp"
             android:textAppearance="?android:attr/textAppearance" />
-
         <TextView
             android:id="@+id/percent"
             android:layout_width="120dp"

@@ -8,13 +8,28 @@
     android:orientation="vertical"
     tools:context="com.example.user.findroom.building">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_gravity="center_horizontal"
-        android:text="Buildings"
-        android:textSize="20sp"/>
+        android:gravity="center_horizontal">
+        <TextView
+            android:id="@+id/Buildings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Buildings"
+            android:textSize="20sp"/>
+        <ImageView
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:layout_marginTop="6dp"
+            android:layout_toEndOf="@id/Buildings"
+            android:layout_toRightOf="@id/Buildings"
+            android:src="@android:drawable/ic_menu_search"
+            android:onClick="mapclick"/>
+
+
+    </RelativeLayout>
 
     <TableLayout
         android:layout_width="wrap_content"

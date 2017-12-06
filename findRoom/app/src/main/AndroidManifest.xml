@@ -28,7 +28,10 @@
         <activity
             android:name=".popups"
             android:theme="@android:style/Theme.DeviceDefault.Dialog" />
-        <activity android:name=".yulpopups"
+        <activity
+            android:name=".yulpopups"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog" />
+        <activity android:name=".errorpopup"
             android:theme="@android:style/Theme.DeviceDefault.Dialog"/>
     </application>
 

@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,8 +19,8 @@ import java.util.logging.Logger;
 public class yul4floor extends AppCompatActivity {
     public ImageView yulLectureRooom;
     public Handler handler;
-    public TextView pTimeText,pTime401,pTime403;
-    public String cnt[] = {"cnt-401","cnt-403"};
+    public TextView pTimeText,pTime401,pTime404;
+    public String cnt[] = {"cnt-401","cnt-404"};
     public String pTime[]={"1234","5678"};
     public String cin[]={"8","8"};
 
@@ -27,10 +28,10 @@ public class yul4floor extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_yul4floor);
-        yulLectureRooom=(ImageView)findViewById(R.id.gwangLectureRoom);
+        yulLectureRooom=(ImageView)findViewById(R.id.yulLectureRoom);
         pTimeText=(TextView)findViewById(R.id.pTimeText_y);
         pTime401=(TextView)findViewById(R.id.pTime401);
-        pTime403=(TextView)findViewById(R.id.pTime403);
+        pTime404=(TextView)findViewById(R.id.pTime404);
         CheckTypesTask task = new CheckTypesTask();
         startRetrieve();
         task.execute();
@@ -57,11 +58,24 @@ public class yul4floor extends AppCompatActivity {
     }
 
     public void showLectureRoom(){
-        pTimeText.setText("**** Updated Today ****");
-        pTime401.setText("Yul401 : " +pTime[0].substring(9,11)
-                +":"+pTime[0].substring(11,13)+":"+pTime[0].substring(13,15));
-        pTime403.setText("Yul403 : "+pTime[1].substring(9,11)
-                +":"+pTime[1].substring(11,13)+":"+pTime[1].substring(13,15));
+        if(Integer.parseInt(cin[0])==8 || Integer.parseInt(cin[1])==8) {
+            yulLectureRooom.setImageResource(R.drawable.servererror);
+        }
+        else {
+            pTimeText.setText("**** Updated Today ****");
+            pTime401.setText("Yul401 : " + pTime[0].substring(9, 11)
+                    + ":" + pTime[0].substring(11, 13) + ":" + pTime[0].substring(13, 15));
+            pTime404.setText("Yul404 : " + pTime[1].substring(9, 11)
+                    + ":" + pTime[1].substring(11, 13) + ":" + pTime[1].substring(13, 15));
+            if (Integer.parseInt(cin[0]) == 0 && Integer.parseInt(cin[1]) == 0)
+                yulLectureRooom.setImageResource(R.drawable.yul00);
+            else if (Integer.parseInt(cin[0]) == 1 && Integer.parseInt(cin[1]) == 0)
+                yulLectureRooom.setImageResource(R.drawable.yul10);
+            else if (Integer.parseInt(cin[0]) == 0 && Integer.parseInt(cin[1]) == 1)
+                yulLectureRooom.setImageResource(R.drawable.yul01);
+            else
+                yulLectureRooom.setImageResource(R.drawable.yul11);
+        }
     }
 
     public interface IReceived {
@@ -120,6 +134,13 @@ public class yul4floor extends AppCompatActivity {
             }
         }
     }
+
+    public void udClick(View v){
+        CheckTypesTask update = new CheckTypesTask();
+        startRetrieve();
+        update.execute();
+    }
+
     private class CheckTypesTask extends AsyncTask<Void,Void,Void> {
         ProgressDialog asyncDialog = new ProgressDialog(yul4floor.this);
 

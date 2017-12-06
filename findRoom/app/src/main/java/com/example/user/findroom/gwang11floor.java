@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,7 +25,6 @@ import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 
 public class gwang11floor extends AppCompatActivity {
-
     public ImageView gwangLectureRooom;
     public Handler handler;
     public TextView pTimeText,pTime1120,pTime1119;
@@ -79,9 +79,9 @@ public class gwang11floor extends AppCompatActivity {
                 if (Integer.parseInt(cin[0]) == 0 && Integer.parseInt(cin[1]) == 0)
                     gwangLectureRooom.setImageResource(R.drawable.gwang00);
                 else if (Integer.parseInt(cin[0]) == 1 && Integer.parseInt(cin[1]) == 0)
-                    gwangLectureRooom.setImageResource(R.drawable.gwang10);
-                else if (Integer.parseInt(cin[0]) == 0 && Integer.parseInt(cin[1]) == 1)
                     gwangLectureRooom.setImageResource(R.drawable.gwang01);
+                else if (Integer.parseInt(cin[0]) == 0 && Integer.parseInt(cin[1]) == 1)
+                    gwangLectureRooom.setImageResource(R.drawable.gwang10);
                 else
                     gwangLectureRooom.setImageResource(R.drawable.gwang11);
         }
@@ -145,7 +145,15 @@ public class gwang11floor extends AppCompatActivity {
             }
         }
     }
-    private class CheckTypesTask extends AsyncTask<Void,Void,Void>{ //Loading bar
+    //update button
+    public void uClick(View v){
+        CheckTypesTask update = new CheckTypesTask();
+        startRetrieve();
+        update.execute();
+    }
+
+    //Loading bar
+    private class CheckTypesTask extends AsyncTask<Void,Void,Void>{
         ProgressDialog asyncDialog = new ProgressDialog(gwang11floor.this);
 
         protected void onPreExecute(){
@@ -170,6 +178,7 @@ public class gwang11floor extends AppCompatActivity {
             super.onPostExecute(result);
         }
     }
+
 
 
 }

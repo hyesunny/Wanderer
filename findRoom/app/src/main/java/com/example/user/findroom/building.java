@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class building extends AppCompatActivity {
 
     public Handler handler;
-    public String cnt[] = {"cnt-1119","cnt-1120","cnt-401","cnt-403"};
+    public String cnt[] = {"cnt-1119","cnt-1120","cnt-401","cnt-404"};
     public String cin[]={"8","8","8","8"};
     public String aName[]={"adn-ae-Gwang","adn-ae-Yul"};
 
@@ -37,30 +37,55 @@ public class building extends AppCompatActivity {
     public void DialClick(View view){
         switch(view.getId()) {
             case R.id.gwang:
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent next;
-                next=new Intent(building.this,popups.class);
-                next.putExtra("cin1119",cin[0]);
-                next.putExtra("cin1120",cin[1]);
-                startActivity(next);}
-        },600);
-                break;
+                if(Integer.parseInt(cin[0])==8 || Integer.parseInt(cin[1])==8) {
+                    Intent next;
+                    next=new Intent(building.this,errorpopup.class);
+                    startActivity(next);
+                    break;
+                }
+                else{
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent next;
+                            next = new Intent(building.this, popups.class);
+                            next.putExtra("cin1119", cin[0]);
+                            next.putExtra("cin1120", cin[1]);
+                            startActivity(next);
+                        }
+                    }, 600);
+                    break;
+                }
             case R.id.yulchung:
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent next;
-                        next=new Intent(building.this,yulpopups.class);
-                        next.putExtra("cin401",cin[2]);
-                        next.putExtra("cin403",cin[3]);
-                        startActivity(next);}
-                },600);
-
-                break;
+                if(Integer.parseInt(cin[2])==8 || Integer.parseInt(cin[3])==8) {
+                    Intent next;
+                    next=new Intent(building.this,errorpopup.class);
+                    startActivity(next);
+                    break;
+                }
+                else{
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent next;
+                            next = new Intent(building.this, yulpopups.class);
+                            next.putExtra("cin401", cin[2]);
+                            next.putExtra("cin404", cin[3]);
+                            startActivity(next);
+                        }
+                    }, 600);
+                    break;
+                }
 
         }
+    }
+    public void mapclick(View view){
+        final LinearLayout ylinear = (LinearLayout)
+                View.inflate(this, R.layout.yulpopup, null);
+        new AlertDialog.Builder(this)
+                .setView(ylinear)
+               // .setNegativeButton("OK", null)
+                .show();
     }
 
     public building(){

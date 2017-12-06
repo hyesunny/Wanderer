@@ -3,6 +3,31 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 import cv2
+from socket import *
+from select import select
+import sys
+import requests
+
+#HOST, PORT Address
+url = "http://58.233.226.102:7579/mobius-yt/adn-ae-Yul/cnt-401" 
+
+exist = 0
+
+payload = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<m2m:cin xmlns:m2m=\"http://www.onem2m.org/xml/protocols\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n<con>" + str(exist) + "</con>\n</m2m:cin>"
+
+headers = {
+        'accept': "application/xml",
+        'x-m2m-ri': "4891",
+        'x-m2m-origin': "SOrigin",
+        'content-type': "application/vnd.onem2m-res+xml; ty=4",
+        'cache-control': "no-cache",
+        'postman-token': "6b3a94c8-2ed3-4d99-9d74-61eb45398145"
+        }
+
+# response = requests.request("POST", url, data =  payload, headers = headers)
+
+#print(response.text)
+#print("Complete")
 
 cascade = cv2.CascadeClassifier("/home/pi/opencv/opencv-3.3.1/data/haarcascades/haarcascade_frontalface_alt.xml")
 
@@ -42,9 +67,18 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     vis = img.copy()
     draw_rects(vis, rects, (0, 255, 9))
     if len(rects)!=0:
-        count += 1
-        print(str(count) + "Face detected")
-    #show the fame
+        exist = 1
+        payload = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<m2m:cin xmlns:m2m=\"http://www.onem2m.org/xml/protocols\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n<con>"+str(exist)+"</con>\n</m2m:cin>"
+        response = requests.request("POST", url, data = payload, headers = headers)
+        print(response.text)
+        print("Not available!")
+        sys.exit()
+    else:
+        response = requests.request("POST", url, data = payload, headers = headers)
+        print(response.text)
+        print("available!")
+        time.sleep(3)
+    #show the famei
     cv2.imshow("Frame", vis)
     key = cv2.waitKey(1) & 0xFF
 

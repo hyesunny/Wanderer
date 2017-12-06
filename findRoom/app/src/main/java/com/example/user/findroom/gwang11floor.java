@@ -82,6 +82,16 @@ public class gwang11floor extends AppCompatActivity {
                     gwangLectureRooom.setImageResource(R.drawable.gwang01);
                 else if (Integer.parseInt(cin[0]) == 0 && Integer.parseInt(cin[1]) == 1)
                     gwangLectureRooom.setImageResource(R.drawable.gwang10);
+                else if(Integer.parseInt(cin[0]) == -1 && Integer.parseInt(cin[1]) == 1)
+                    gwangLectureRooom.setImageResource(R.drawable.gwang1_1);
+                else if(Integer.parseInt(cin[0]) == -1 && Integer.parseInt(cin[1]) == 0)
+                    gwangLectureRooom.setImageResource(R.drawable.gwang0_1);
+                else if(Integer.parseInt(cin[0]) == 0 && Integer.parseInt(cin[1]) == -1)
+                    gwangLectureRooom.setImageResource(R.drawable.gwang_10);
+                else if(Integer.parseInt(cin[0]) == 1 && Integer.parseInt(cin[1]) == -1)
+                    gwangLectureRooom.setImageResource(R.drawable.gwang_11);
+                else if(Integer.parseInt(cin[0]) == -1 && Integer.parseInt(cin[1]) == -1)
+                    gwangLectureRooom.setImageResource(R.drawable.gwang_1_1);
                 else
                     gwangLectureRooom.setImageResource(R.drawable.gwang11);
         }

@@ -31,6 +31,7 @@ const crypto = require('crypto');
 var fileStreamRotator = require('file-stream-rotator');
 var merge = require('merge');
 var https = require('https');
+var moment = require('moment');
 
 global.NOPRINT = 'true';
 global.ONCE = 'true';
@@ -133,7 +134,7 @@ if (use_clustering) {
 
 					//의문..타이머 관련된 거 일수도
                     wdt.set_wdt(require('shortid').generate(), 43200, del_req_resource);
-                    wdt.set_wdt(require('shortid').generate(), 31536000, del_expired_resource);
+                    wdt.set_wdt(require('shortid').generate(), 3600, del_expired_resource);
 
                     require('./pxy_mqtt');
                     require('./pxy_coap');

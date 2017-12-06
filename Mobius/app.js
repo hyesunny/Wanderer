@@ -32,6 +32,7 @@ var fileStreamRotator = require('file-stream-rotator');
 var merge = require('merge');
 var https = require('https');
 var moment = require('moment');
+var net = require('net'); //add
 
 global.NOPRINT = 'true';
 global.ONCE = 'true';
@@ -730,6 +731,16 @@ function check_resource(request, response, callback) {
     var last_url = url_arr[url_arr.length - 1];
     var op = 'direct';
 
+	if (last_url == 'updatelatest') {
+		var update_ncube = net.connect({host:'192.168.0.9', port:3105}, function(){console.log('connection with ncube')});
+		update_ncube.on('data', function(data){
+			console.log('Execution picam for real-time update');
+		}); 
+		update_ncube.write('picamupdate');
+		
+		ri = ri.replace('/updatelatest', '');
+		last_url = last_url.replace('/updatelatest', '/latest');
+	}
     if (last_url == 'latest' || last_url == 'la') {
         ri = ri.replace('/latest', '');
         ri = ri.replace('/la', '');

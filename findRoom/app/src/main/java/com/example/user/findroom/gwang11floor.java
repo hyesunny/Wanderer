@@ -1,6 +1,7 @@
 package com.example.user.findroom;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,7 @@ public class gwang11floor extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gwang11floor);
+
         gwangLectureRooom=(ImageView)findViewById(R.id.gwangLectureRoom);
         pTimeText=(TextView)findViewById(R.id.pTimeText);
         pTime1119=(TextView)findViewById(R.id.pTIme1119);
@@ -63,9 +65,11 @@ public class gwang11floor extends AppCompatActivity {
                 },1000);
 
     }
+    /* show Lecture Room */
     public void showLectureRoom() {
-            if(Integer.parseInt(cin[0])==8 || Integer.parseInt(cin[1])==8)
+            if(Integer.parseInt(cin[0])==8 || Integer.parseInt(cin[1])==8) {
                 gwangLectureRooom.setImageResource(R.drawable.servererror);
+            }
             else{
                 pTimeText.setText("**** Updated Today ****");
                 pTime1119.setText("Gwang1119 : " +pTime[0].substring(9,11)
@@ -83,7 +87,7 @@ public class gwang11floor extends AppCompatActivity {
         }
     }
 
-
+    /* Retrieve cnt */
     public interface IReceived {
         void getResponseBody(String msg);
     }
@@ -126,10 +130,11 @@ public class gwang11floor extends AppCompatActivity {
                 while ((strLine = in.readLine()) != null) {
                     strResp += strLine;
                 }
-				
+
 				ParseElementXml cxml= new ParseElementXml();
 				cin[Number]= cxml.GetElementXml(strResp,"con");
                 pTime[Number]=cxml.GetElementXml(strResp,"ct");
+
                 if ( strResp != "" ) {
                     receiver.getResponseBody(strResp);
                 }
@@ -140,7 +145,7 @@ public class gwang11floor extends AppCompatActivity {
             }
         }
     }
-    private class CheckTypesTask extends AsyncTask<Void,Void,Void>{
+    private class CheckTypesTask extends AsyncTask<Void,Void,Void>{ //Loading bar
         ProgressDialog asyncDialog = new ProgressDialog(gwang11floor.this);
 
         protected void onPreExecute(){
@@ -152,7 +157,7 @@ public class gwang11floor extends AppCompatActivity {
         }
         protected Void doInBackground(Void... arg0){
             try{
-                for(int i=0;i<3;i++){
+                for(int i=0;i<2;i++){
                     Thread.sleep(500);
                 }
             }catch(InterruptedException e){

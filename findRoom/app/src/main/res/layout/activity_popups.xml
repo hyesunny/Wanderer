@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.user.findroom.popups">
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/custom_progressbar_drawable"
+             />
+        <TextView
+            android:id="@+id/txtProgress"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:gravity="center"
+            android:layout_toRightOf="@+id/progressBar"
+            android:layout_below="@id/percent"
+            android:textSize="40sp"
+            android:textAppearance="?android:attr/textAppearance" />
+        <TextView
+            android:id="@+id/percent"
+            android:layout_width="120dp"
+            android:layout_height="50dp"
+            android:layout_toRightOf="@id/progressBar"
+            android:gravity="center"
+            android:text="Congestion\nRate"
+            android:textSize="20sp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/yes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/no"
+        android:text="Yes"
+        android:onClick="fclick"/>
+    <Button
+        android:id="@+id/no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="No"
+        android:onClick="fclick"/>
+    </RelativeLayout>
+
+</LinearLayout>

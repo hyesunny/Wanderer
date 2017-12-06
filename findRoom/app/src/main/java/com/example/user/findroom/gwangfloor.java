@@ -16,8 +16,6 @@ public class gwangfloor extends AppCompatActivity {
         Intent emptyroom=null;
         switch(view.getId()){
             case R.id.floor1:
-                emptyroom=new Intent(this,slidingpopup.class);
-                startActivity(emptyroom);
                 break;
             case R.id.floor2:
                 break;

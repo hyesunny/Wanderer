@@ -25,7 +25,10 @@
         <activity android:name=".gwang11floor" />
         <activity android:name=".yulchungfloor" />
         <activity android:name=".yul4floor" />
-        <activity android:name=".slidingpopup"
+        <activity
+            android:name=".popups"
+            android:theme="@android:style/Theme.DeviceDefault.Dialog" />
+        <activity android:name=".yulpopups"
             android:theme="@android:style/Theme.DeviceDefault.Dialog"/>
     </application>
 
